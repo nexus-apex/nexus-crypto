@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Portfolios | NexusCrypto{% endblock %}
+{% block page_title %}Portfolios{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search portfolios...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+      <option value="archived" {% if status_filter == 'archived' %}selected{% endif %}>Archived</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/portfolios/create/" class="btn btn-primary">+ New Portfolio</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Owner</th><th>Total Value</th><th>Total Invested</th><th>Pnl</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/portfolios/{{ r.pk }}/edit/"><strong>{{ r.name }}</strong></a></td>
+        <td>{{ r.owner|default:"-" }}</td>
+        <td>{{ r.total_value|floatformat:2 }}</td>
+        <td>{{ r.total_invested|floatformat:2 }}</td>
+        <td>{{ r.pnl|floatformat:2 }}</td>
+        <td class="actions">
+          <a href="/portfolios/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/portfolios/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No portfolios found.</p>
+    <a href="/portfolios/create/" class="btn btn-primary" style="margin-top:1rem">Create Portfolio</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
