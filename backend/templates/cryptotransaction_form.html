@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} CryptoTransaction | NexusCrypto{% endblock %}
+{% block page_title %}{% if editing %}Edit CryptoTransaction{% else %}New CryptoTransaction{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Asset Name</label>
+        <input type="text" name="asset_name" value="{{ record.asset_name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Transaction Type</label>
+        <select name="transaction_type">
+          <option value="buy" {% if record.transaction_type == 'buy' %}selected{% endif %}>Buy</option>
+          <option value="sell" {% if record.transaction_type == 'sell' %}selected{% endif %}>Sell</option>
+          <option value="transfer" {% if record.transaction_type == 'transfer' %}selected{% endif %}>Transfer</option>
+          <option value="swap" {% if record.transaction_type == 'swap' %}selected{% endif %}>Swap</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" step="0.01" name="quantity" value="{{ record.quantity|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Price</label>
+        <input type="number" step="0.01" name="price" value="{{ record.price|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total</label>
+        <input type="number" step="0.01" name="total" value="{{ record.total|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Fee</label>
+        <input type="number" step="0.01" name="fee" value="{{ record.fee|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ record.date|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Exchange</label>
+        <input type="text" name="exchange" value="{{ record.exchange|default:'' }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea name="notes">{{ record.notes|default:'' }}</textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} CryptoTransaction</button>
+      <a href="/cryptotransactions/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
